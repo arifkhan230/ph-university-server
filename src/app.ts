@@ -1,10 +1,14 @@
 import express, { Application, Request, Response } from 'express'
-import config from './app/config'
-const app: Application = express();
-const port = config.port || 5000;
+import cors from 'cors'
+
+const app: Application = express()
+
+// parser
+app.use(express.json())
+app.use(cors())
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
+  res.send('Hello world')
 })
 
-export default app;
+export default app
