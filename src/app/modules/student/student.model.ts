@@ -78,7 +78,7 @@ const studentSchema = new Schema<Student>({
     type: String,
     required: true,
   },
-  contractNor: {
+  contractNo: {
     type: String,
     required: true,
   },

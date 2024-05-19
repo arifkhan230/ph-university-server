@@ -27,7 +27,7 @@ export type Student = {
   gender: 'male' | 'female';
   email: string;
   dateOfBirth: string;
-  contractNor: string;
+  contractNo: string;
   emergencyContractNo: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
