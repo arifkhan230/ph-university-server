@@ -1,21 +1,73 @@
 import { Schema, model, connect } from 'mongoose';
-import { Student } from './student.interface';
+import {
+  Guardian,
+  LocalGuardian,
+  Student,
+  UserName,
+} from './student.interface';
 
+// Username Schema
+const userNameSchema = new Schema<UserName>({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  middleName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+});
+
+// Guardian Schema
+const guardianSchema = new Schema<Guardian>({
+  fatherName: {
+    type: String,
+    required: true,
+  },
+  fatherOccupation: {
+    type: String,
+    required: true,
+  },
+  fatherContractNo: {
+    type: String,
+    required: true,
+  },
+  motherName: {
+    type: String,
+    required: true,
+  },
+  motherOccupation: {
+    type: String,
+    required: true,
+  },
+  motherContractNo: {
+    type: String,
+    required: true,
+  },
+});
+
+// Local guardian Schema
+const localGuardianSchema = new Schema<LocalGuardian>({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  middleName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+});
+
+// Student Schema
 const studentSchema = new Schema<Student>({
   id: { type: String },
-  name: {
-    firstName: {
-      type: String,
-      required: true,
-    },
-    middleName: {
-      type: String,
-    },
-    lastName: {
-      type: String,
-      required: true,
-    },
-  },
+  name: userNameSchema,
   gender: ['male', 'female'],
 
   email: {
@@ -43,48 +95,12 @@ const studentSchema = new Schema<Student>({
     type: String,
     required: true,
   },
-  guardian: {
-    fatherName: {
-      type: String,
-      required: true,
-    },
-    fatherOccupation: {
-      type: String,
-      required: true,
-    },
-    fatherContractNo: {
-      type: String,
-      required: true,
-    },
-    motherName: {
-      type: String,
-      required: true,
-    },
-    motherOccupation: {
-      type: String,
-      required: true,
-    },
-    motherContractNo: {
-      type: String,
-      required: true,
-    },
-  },
-  localGuardian: {
-    firstName: {
-      type: String,
-      required: true,
-    },
-    middleName: {
-      type: String,
-    },
-    lastName: {
-      type: String,
-      required: true,
-    },
-  },
+  guardian: guardianSchema,
+  localGuardian: localGuardianSchema,
   profileImg: {
     type: String,
-    required: true,
   },
-  isActive: ['active', 'inActive'],
+  isActive: ['active', 'blocked'],
 });
+
+const Student = model<Student>('Student', studentSchema);
