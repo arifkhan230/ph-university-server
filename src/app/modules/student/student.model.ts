@@ -11,12 +11,23 @@ const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
     required: [true, 'fist name is required'],
+    trim: true,
+    maxlength: [20, 'First Name cannot be more then 20 character'],
+    validate: {
+      validator: function (value: string) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+        return firstNameStr === value;
+      },
+      message: '{VALUE} is not in capitalized format',
+    },
   },
   middleName: {
     type: String,
+    trim: true,
   },
   lastName: {
     type: String,
+    trim: true,
     required: [true, 'first name is required'],
   },
 });
@@ -25,26 +36,32 @@ const userNameSchema = new Schema<UserName>({
 const guardianSchema = new Schema<Guardian>({
   fatherName: {
     type: String,
+    trim: true,
     required: [true, 'father name is required'],
   },
   fatherOccupation: {
     type: String,
+    trim: true,
     required: [true, 'father occupation is required'],
   },
   fatherContractNo: {
     type: String,
+    trim: true,
     required: [true, 'fathers contact no is required'],
   },
   motherName: {
     type: String,
+    trim: true,
     required: [true, 'mothers name is required'],
   },
   motherOccupation: {
     type: String,
+    trim: true,
     required: [true, 'mothers occupation is required'],
   },
   motherContractNo: {
     type: String,
+    trim: true,
     required: [true, 'mothers contact no is required'],
   },
 });
@@ -53,13 +70,16 @@ const guardianSchema = new Schema<Guardian>({
 const localGuardianSchema = new Schema<LocalGuardian>({
   firstName: {
     type: String,
+    trim: true,
     required: [true, 'first name of local guardian is required'],
   },
   middleName: {
+    trim: true,
     type: String,
   },
   lastName: {
     type: String,
+    trim: true,
     required: [true, 'last name of local guardian is required'],
   },
 });
@@ -73,6 +93,7 @@ const studentSchema = new Schema<Student>({
   },
   name: {
     type: userNameSchema,
+    trim: true,
     required: [true, 'Student name is required'],
   },
   gender: {
@@ -86,6 +107,7 @@ const studentSchema = new Schema<Student>({
   email: {
     type: String,
     required: [true, 'email is required'],
+    unique: true,
   },
   dateOfBirth: {
     type: String,
@@ -108,10 +130,12 @@ const studentSchema = new Schema<Student>({
   },
   presentAddress: {
     type: String,
+    trim: true,
     required: [true, 'present address is required'],
   },
   permanentAddress: {
     type: String,
+    trim: true,
     required: [true, 'permanent address is required'],
   },
   guardian: {
