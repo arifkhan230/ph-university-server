@@ -90,80 +90,109 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 
 // Student Schema
-const studentSchema = new Schema<TStudent>({
-  id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'User id is required'],
-    unique: true,
-    ref: 'User',
-  },
-  name: {
-    type: userNameSchema,
-    trim: true,
-    required: [true, 'Student name is required'],
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message: '{VALUE} is not valid',
+const studentSchema = new Schema<TStudent>(
+  {
+    id: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    required: true,
-  },
-  email: {
-    type: String,
-    required: [true, 'email is required'],
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} is not valid email',
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User id is required'],
+      unique: true,
+      ref: 'User',
+    },
+    name: {
+      type: userNameSchema,
+      trim: true,
+      required: [true, 'Student name is required'],
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message: '{VALUE} is not valid',
+      },
+      required: true,
+    },
+    email: {
+      type: String,
+      required: [true, 'email is required'],
+      unique: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} is not valid email',
+      },
+    },
+    dateOfBirth: {
+      type: String,
+      required: [true, 'date of birth is required'],
+    },
+    contractNo: {
+      type: String,
+      required: [true, 'contact no is required'],
+    },
+    emergencyContractNo: {
+      type: String,
+      required: [true, 'emergency contract no is required'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+        message: '{VALUE} is not valid ',
+      },
+    },
+    presentAddress: {
+      type: String,
+      trim: true,
+      required: [true, 'present address is required'],
+    },
+    permanentAddress: {
+      type: String,
+      trim: true,
+      required: [true, 'permanent address is required'],
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'guardian is required'],
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: [true, 'local guardian is required'],
+    },
+    profileImg: {
+      type: String,
     },
   },
-  dateOfBirth: {
-    type: String,
-    required: [true, 'date of birth is required'],
-  },
-  contractNo: {
-    type: String,
-    required: [true, 'contact no is required'],
-  },
-  emergencyContractNo: {
-    type: String,
-    required: [true, 'emergency contract no is required'],
-  },
-  bloodGroup: {
-    type: String,
-    enum: {
-      values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-      message: '{VALUE} is not valid ',
+  {
+    toJSON: {
+      virtuals: true,
     },
   },
-  presentAddress: {
-    type: String,
-    trim: true,
-    required: [true, 'present address is required'],
-  },
-  permanentAddress: {
-    type: String,
-    trim: true,
-    required: [true, 'permanent address is required'],
-  },
-  guardian: {
-    type: guardianSchema,
-    required: [true, 'guardian is required'],
-  },
-  localGuardian: {
-    type: localGuardianSchema,
-    required: [true, 'local guardian is required'],
-  },
-  profileImg: {
-    type: String,
-  },
+);
+
+// Query middleware
+studentSchema.pre('find', function (next) {
+  // console.log(this, 'query middleware')
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', function (next) {
+  // console.log(this, 'query middleware')
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('aggregate', function (next) {
+  // console.log(this, 'query middleware')
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+// virtual
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName && this.name.middleName} ${this.name.lastName}`;
 });
 
 export const StudentModel = model<TStudent>('Student', studentSchema);
