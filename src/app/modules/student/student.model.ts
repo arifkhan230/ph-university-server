@@ -3,7 +3,7 @@ import validator from 'validator';
 import {
   Guardian,
   LocalGuardian,
-  Student,
+  TStudent,
   UserName,
 } from './student.interface';
 
@@ -90,11 +90,17 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 
 // Student Schema
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent>({
   id: {
     type: String,
     required: true,
     unique: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is required'],
+    unique: true,
+    ref: 'User',
   },
   name: {
     type: userNameSchema,
@@ -158,14 +164,6 @@ const studentSchema = new Schema<Student>({
   profileImg: {
     type: String,
   },
-  isActive: {
-    type: String,
-    enum: {
-      values: ['active', 'blocked'],
-      message: "isActive can be one of the following: 'active', 'blocked'",
-    },
-    default: 'active',
-  },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+export const StudentModel = model<TStudent>('Student', studentSchema);
