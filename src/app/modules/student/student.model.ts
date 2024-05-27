@@ -119,11 +119,11 @@ const studentSchema = new Schema<TStudent>(
     email: {
       type: String,
       required: [true, 'email is required'],
-      unique: true,
       validate: {
         validator: (value: string) => validator.isEmail(value),
         message: '{VALUE} is not valid email',
       },
+      unique: true,
     },
     dateOfBirth: {
       type: String,
