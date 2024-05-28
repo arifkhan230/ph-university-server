@@ -36,22 +36,27 @@ const localGuardianValidationSchema = z.object({
 
 // Student Schema
 const studentValidationSchema = z.object({
-  id: z.string(),
-  name: userNameValidationSchema,
-  gender: z.enum(['male', 'female']),
-  email: z.string().email(),
-  dateOfBirth: z.string(),
-  contractNo: z.string(),
-  emergencyContractNo: z.string(),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string().trim(),
-  permanentAddress: z.string().trim(),
-  guardian: guardianValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  profileImg: z.string().url().optional(),
-  isDeleted: z.boolean().default(false),
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z.enum(['male', 'female']),
+      email: z.string().email(),
+      dateOfBirth: z.string(),
+      contractNo: z.string(),
+      emergencyContractNo: z.string(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().trim(),
+      permanentAddress: z.string().trim(),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      profileImg: z.string().url().optional(),
+    }),
+  }),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  studentValidationSchema,
+};
