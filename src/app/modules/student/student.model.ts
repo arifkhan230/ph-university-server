@@ -126,7 +126,7 @@ const studentSchema = new Schema<TStudent>(
       unique: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required: [true, 'date of birth is required'],
     },
     contractNo: {
