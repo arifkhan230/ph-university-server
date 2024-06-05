@@ -11,14 +11,27 @@ const createStudentIntoDB = async (studentData: TStudent) => {
 
 // getting all students from db
 const getAllStudentsFromDB = async () => {
-  const result = await StudentModel.find();
+  const result = await StudentModel.find()
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
 
 // getting single student from db
 const getSingleStudentFromDB = async (id: string) => {
-  // const result = await Student.findOne({ id })
-  const result = await StudentModel.aggregate([{ $match: { id: id } }]);
+  const result = await StudentModel.findById({ _id: id })
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
 

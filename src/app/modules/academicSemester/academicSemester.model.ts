@@ -10,6 +10,8 @@ import {
   AcademicSemesterName,
   Months,
 } from './academicSemester.constant';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
@@ -50,7 +52,7 @@ academicSemesterSchema.pre('save', async function (next) {
   });
 
   if (isSemesterExists) {
-    throw new Error('Semester is already exists');
+    throw new AppError(httpStatus.NOT_FOUND, 'Semester is already exists');
   }
   next();
 });
