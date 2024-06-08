@@ -14,8 +14,31 @@ const createStudentIntoDB = async (studentData: TStudent) => {
 };
 
 // getting all students from db
-const getAllStudentsFromDB = async () => {
-  const result = await StudentModel.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const queryObj = { ...query };
+  // {email:{$regex:query.searchTerm, $options: i}}
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+
+  let searchTerm = '';
+
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+
+  const searchQuery = StudentModel.find({
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  });
+
+  // filtering
+  const excludeFields = ['searchTerm', 'sort'];
+  excludeFields.forEach((el) => delete queryObj[el]);
+  console.log(query);
+  console.log(queryObj);
+
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -23,7 +46,16 @@ const getAllStudentsFromDB = async () => {
         path: 'academicFaculty',
       },
     });
-  return result;
+
+  let sort = '-createdAt';
+
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+
+  const sortQuery = await filterQuery.sort(sort);
+
+  return sortQuery;
 };
 
 // getting single student from db
@@ -105,10 +137,10 @@ const deleteStudentFromDB = async (id: string) => {
     await session.endSession();
 
     return deletedStudent;
-  } catch (error) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error('Failed to delete student');
+    throw new Error(err);
   }
 };
 

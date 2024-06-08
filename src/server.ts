@@ -35,5 +35,3 @@ process.on('uncaughtException', () => {
   console.log(`uncaughtException is detected, Shutting down the server....`);
   process.exit(1);
 });
-
-console.log(x);
