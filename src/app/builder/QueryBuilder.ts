@@ -36,7 +36,8 @@ class QueryBuilder<T> {
   }
 
   sort() {
-    const sort = this?.query?.sort || '-__createdAt';
+    const sort =
+      (this?.query?.sort as string)?.split(',').join(' ') || '-__createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
 
     return this;
@@ -44,7 +45,7 @@ class QueryBuilder<T> {
 
   paginate() {
     const page = Number(this?.query?.page) || 1;
-    const limit = Number(this?.query?.limit) || 1;
+    const limit = Number(this?.query?.limit) || 0;
     const skip = (page - 1) * limit;
 
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
