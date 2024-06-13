@@ -21,6 +21,8 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const isSemesterRegistrationExists =
     await SemesterRegistration.findById(semesterRegistration);
 
+  const academicSemester = isSemesterRegistrationExists?.academicSemester;
+
   if (!isSemesterRegistrationExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Semester Registration not found');
   }
@@ -55,7 +57,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     throw new AppError(httpStatus.NOT_FOUND, 'faculty not found');
   }
 
-  const result = await OfferedCourse.create(payload);
+  const result = await OfferedCourse.create({ ...payload, academicSemester });
   return result;
 };
 
