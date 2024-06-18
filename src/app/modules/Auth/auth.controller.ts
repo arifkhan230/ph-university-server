@@ -24,6 +24,7 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
+// changing password
 const changePassword = catchAsync(async (req, res) => {
   const { ...passwordData } = req.body;
 
@@ -37,7 +38,21 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
+// generating new access token
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const result = await AuthServices.refreshToken(refreshToken);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Access token is retrieved successfully',
+    data: result,
+  });
+});
+
 export const AuthController = {
   loginUser,
   changePassword,
+  refreshToken,
 };
